@@ -37,6 +37,6 @@ FROM
     INNER JOIN EMP_ROLE R ON E.ROLE_ID = R.ID
     LEFT JOIN DEPARTMENT D ON R.DEPARTMENT_ID = D.ID;
 
- NSERT INTO employee (firstName, lastName, role_id, manager_id) VALUES("${firstName}", "${lastName}", ${role_id}, ${manager_id})
+ INSERT INTO employee (firstName, lastName, role_id, manager_id) VALUES("${firstName}", "${lastName}", ${role_id}, ${manager_id})
  INSERT INTO emp_role (title, salary, department_id) VALUES("${title}", ${salary}, ${department_id}) 
  UPDATE employee SET role_id = ${role_id} WHERE id = ${id}  

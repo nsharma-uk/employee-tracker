@@ -1,7 +1,9 @@
 require("dotenv").config();
 const mysql = require("mysql2");
-// const consoleTable = require("console.table");
-// const inquirer = require("inquirer");
+const consoleTable = require("console.table");
+const inquirer = require("inquirer");
+const questions = require("./utils/questions");
+const {generateUserChoices, generateEmployeeName} =require("./utils/utils")
 
 //define DB config
 const config = {
@@ -11,9 +13,16 @@ const config = {
   database: process.env.DB_NAME,
 };
 
-
 const db = mysql.createConnection(config);
 
-db.query("SELECT * FROM employee", function (error, results) {
-  console.log(results); // results contains rows returned by server
-});
+// db.query("SELECT * FROM employee", function (error, results) {
+//   console.log(results); // results contains rows returned by server
+// });
+
+const init = async () => {
+  await db.init();
+
+  let inProgress = true;
+};
+
+init();
