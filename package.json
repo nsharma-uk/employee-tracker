@@ -5,13 +5,15 @@
   "main": "index.js",
   "dependencies": {
     "-": "^0.0.1",
+    "chalk": "^5.0.1",
     "clone": "^1.0.4",
     "console.table": "^0.10.0",
     "D": "^1.0.0",
     "defaults": "^1.0.3",
     "dotenv": "^16.0.1",
     "easy-table": "^1.1.0",
-    "inquirer": "^9.0.0",
+    "inquirer": "^8.2.4",
+    "mysql-promise": "^5.0.0",
     "mysql2": "^2.3.3",
     "nodemon": "^2.0.18",
     "wcwidth": "^1.0.1"

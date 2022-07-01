@@ -1,28 +1,43 @@
 require("dotenv").config();
-const mysql = require("mysql2");
-const consoleTable = require("console.table");
+
+//const mysql = require("mysql2");
+//const chalk = require("chalk");
 const inquirer = require("inquirer");
-const questions = require("./utils/questions");
-const {generateUserChoices, generateEmployeeName} =require("./utils/utils")
-
+const {optionQuestions} = require("./utils/questions");
+const { generateUserChoices, generateEmployeeName } = require("./utils/utils");
+const initDatabase = require("./utils/db")
 //define DB config
-const config = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-};
-
-const db = mysql.createConnection(config);
-
-// db.query("SELECT * FROM employee", function (error, results) {
-//   console.log(results); // results contains rows returned by server
-// });
 
 const init = async () => {
-  await db.init();
+  try {
+    const { executeQuery, closeConnection } = await initDatabase({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+    });
 
-  let inProgress = true;
+    console.log("Welcome to the Employee Management System");
+   
+    let inProgress = true;
+   
+    while (inProgress) {
+      const { option } = await inquirer.prompt(optionQuestions);
+;
+      if (option === "viewAllEmployees") {
+      const optionResults = await executeQuery("SELECT * FROM employee")
+      console.table (optionResults);
+      }
+      if (option === "quit") {
+        await closeConnection();
+        inProgress = false;
+        console.log("THANK YOU");
+      }
+
+    }
+  } catch (error) {
+    console.log(`[ERROR]: Internal error | ${error.message}`);
+    process.exit(0);
+  }
 };
-
 init();

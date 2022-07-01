@@ -1,6 +1,6 @@
 //generating a list of secondary questions, dependent upon choices made in previous questions
 
-const generateUserChoices = = (array, value) => {
+const generateUserChoices = (array, value) => {
     return array.map((each) => {
       return {
         name: each[value],
