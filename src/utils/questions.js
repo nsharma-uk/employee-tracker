@@ -68,7 +68,7 @@ const optionQuestions = {
     },
     {
       value: "Exit",
-      name: "Exit APP",
+      name: "Exit the App",
       short: "Exit",
     },
   ],

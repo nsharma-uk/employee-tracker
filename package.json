@@ -19,6 +19,7 @@
     "wcwidth": "^1.0.1"
   },
   "scripts": {
+    "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
   "keywords": [],

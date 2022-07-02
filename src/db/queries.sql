@@ -15,6 +15,14 @@ SELECT
 FROM
     emp_role;
 
+
+--select/view from employee table
+
+
+
+
+
+
 SELECT
     emp_role.title,
     department.dept_name,
