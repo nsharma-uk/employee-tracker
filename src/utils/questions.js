@@ -37,7 +37,7 @@ const optionQuestions = {
     },
     {
       value: "addEmployee",
-      name: "Add Employee",
+      name: "Add an employee",
       short: "Add employee",
     },
     {
@@ -45,7 +45,7 @@ const optionQuestions = {
       name: "Remove an Employee",
     },
     {
-      short: "Employee Role",
+     
       value: "updateRole",
       name: "Update employee role",
       short: "Update employee",
@@ -53,17 +53,17 @@ const optionQuestions = {
     {
       short: "Employee Manager",
       value: "updateManager",
-      name: "Update Employee Manager",
-      short: "Add employee",
+      name: "Update a manager",
+     
     },
     {
       value: "addRole",
-      name: "Add Role",
+      name: "Add a role",
       short: "Add role",
     },
     {
       value: "removeRole",
-      name: "Remove a Role",
+      name: "Remove a role",
       short: "Remove role",
     },
     {

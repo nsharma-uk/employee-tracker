@@ -15,36 +15,59 @@ SELECT
 FROM
     emp_role;
 
-
---select/view from employee table
-
-
-
-
-
-
+--view ALL employees
 SELECT
-    emp_role.title,
-    department.dept_name,
-    emp_role.salary
+    e.id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee,
+    r.salary,
+    r.title,
+    d.dept_name,
+    CONCAT(m.first_name, ' ', m.last_name) AS manager
+FROM
+    employee e
+    LEFT JOIN employee m ON e.manager_id = m.id
+    INNER JOIN emp_role r ON e.role_id = r.id
+    LEFT JOIN department d ON r.department_id = d.id;
+
+--view all departments
+SELECT * FROM department
+
+--view all roles
+SELECT
+    emp_role.id,
+    emp_role.title AS role,
+    emp_role.salary,
+    department.dept_name AS department
 FROM
     emp_role
-    JOIN department ON emp_role.department_id = department.id
-ORDER BY
-    department.dept_name;
+    LEFT JOIN department ON department.id = emp_role.department_id;
 
+--view employees by department
 SELECT
-    CONCAT(E.FIRST_NAME, ' ', E.LAST_NAME) AS USER,
-    R.SALARY,
-    R.TITLE,
-    D.ID,
-    CONCAT(M.FIRST_NAME, ' ', M.LAST_NAME) AS MANAGER
+    e.id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee,
+    r.salary,
+    r.title,
+    d.dept_name,
+    CONCAT(m.first_name, ' ', m.last_name) AS manager
 FROM
-    EMPLOYEE AS E
-    JOIN EMPLOYEE AS M ON E.MANAGER_ID = M.ID
-    INNER JOIN EMP_ROLE R ON E.ROLE_ID = R.ID
-    LEFT JOIN DEPARTMENT D ON R.DEPARTMENT_ID = D.ID;
+    employee AS e
+    LEFT JOIN employee AS m ON e.manager_id = m.id
+    INNER JOIN emp_role r ON e.role_id = r.id
+    LEFT JOIN department d ON r.department_id = d.id;
 
- INSERT INTO employee (firstName, lastName, role_id, manager_id) VALUES("${firstName}", "${lastName}", ${role_id}, ${manager_id})
- INSERT INTO emp_role (title, salary, department_id) VALUES("${title}", ${salary}, ${department_id}) 
- UPDATE employee SET role_id = ${role_id} WHERE id = ${id}  
+--view employees by manager
+SELECT
+    e.id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee,
+    r.salary,
+    r.title,
+    d.dept_name,
+    CONCAT(m.first_name, ' ', m.last_name) AS manager
+FROM
+    employee AS e
+    LEFT JOIN employee AS m ON e.manager_id = m.id
+    LEFT JOIN emp_role r ON e.role_id = r.id
+    LEFT JOIN department d ON r.department_id = d.id
+
+    
