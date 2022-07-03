@@ -49,20 +49,19 @@ THEN I am prompted to select an employee to update and their new role and this i
 
 ## Demo
 
-[View demo here](https://drive.google.com/file/d/1XT5Mimzpxqjd-0BeHHm1o6N8ggz5LQ_u/view?usp=sharing)
+[View demo here]
 
 ## Technologies
 
 The following technologies and packages were used in this project:
 
-- Node.js v18.2.0 and NPM v8.9.0
-- Node core packages: fs (for reading/writing into files),
+- Node.js and NPM 
 - Node external packages:
-    - "console.table" 
-    - "dotenv" 
-    - "express" 
-    - "inquirer" 
-    - "mysql2"
+    - console.table 
+    - dotenv
+    - express 
+    - inquirer 
+    - mysql2
 
 
 ## Installation
