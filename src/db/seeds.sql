@@ -35,8 +35,8 @@ VALUES
     ("Alvin", "Monk", 2, 1),
     ("Emily", "Watson", 3, 1),
     ("Oneaka", "Price", 4, 1),
-    ("Thamina", "Khan", 5, 2),
+    ("Thamina", "Khan", 9, 2),
     ("Al", "Smith", 6, 1),
     ("James", "Robson", 7, 1),
     ("Gurpreet", "Kaur", 8, 1),
-    ("Anton", "Kolaric", 9, 1),
+    ("Anton", "Kolaric", 9, 1);

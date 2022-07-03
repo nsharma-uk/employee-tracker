@@ -30,8 +30,11 @@ FROM
     LEFT JOIN department d ON r.department_id = d.id;
 
 --view all departments
-SELECT * FROM department
-
+SELECT
+    *
+FROM
+    department 
+    
 --view all roles
 SELECT
     emp_role.id,
@@ -68,6 +71,8 @@ FROM
     employee AS e
     LEFT JOIN employee AS m ON e.manager_id = m.id
     LEFT JOIN emp_role r ON e.role_id = r.id
-    LEFT JOIN department d ON r.department_id = d.id
-
-    
+    LEFT JOIN department d ON r.department_id = d.id --Add employee
+INSERT INTO
+    employee (first_name, last_name, role_id, manager_id)
+VALUES
+    ("Nayan", "Sharma", 3, 1);

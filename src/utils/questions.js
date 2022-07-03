@@ -31,6 +31,11 @@ const optionQuestions = {
       short: "Employees By Manager",
     },
     {
+      value: "addDepartment",
+      name: "Add a department",
+      short: "Add department",
+    },
+    {
       value: "removeDepartment",
       name: "Remove a Department",
       short: "Remove department",
@@ -51,7 +56,7 @@ const optionQuestions = {
       short: "Update employee",
     },
     {
-      short: "Employee Manager",
+      short: "Update Manager",
       value: "updateManager",
       name: "Update a manager",
      
