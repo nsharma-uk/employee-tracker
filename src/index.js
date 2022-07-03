@@ -145,7 +145,35 @@ const init = async () => {
       );
       console.log(`You have added ${newDepartment} to the system`);
 
-      //
+      
+      if (option === "updateRole") {
+      //queries
+      const employee = executeQuery("SELECT * FROM employee");
+      const role = executeQuery("SELECT * FROM role");
+      //questions
+      const newRole = [
+        {
+          type: "list",
+          message: "Which employee would you like to update?",
+          name: "id",
+          choices: generateEmployeeName(employee),
+        },
+        {
+          type: "list",
+          message:
+            "What role would you like to assign to the selected employee?",
+          name: "role_id",
+          choices: generateUserChoices(role, "title"),
+        },
+      ];
+      const { id, role_id } = await inquirer.prompt(newRole);
+
+      await db.query(
+        `UPDATE employee SET role_id = ${role_id} WHERE id = ${id}`
+      );
+      console.log(`Role has been successfully updated`);
+
+
     }
     if (option === "Exit") {
       await closeConnection();
