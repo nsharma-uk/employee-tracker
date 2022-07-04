@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 //const chalk = require("chalk");
 const inquirer = require("inquirer");
 const { optionQuestions } = require("./utils/questions");
@@ -11,6 +11,7 @@ const {
   viewAllDepartments,
   viewAllEmployees,
   viewAllRoles,
+  viewAllEmpsByDepartment,
 } = require("./utils/queries");
 
 const init = async () => {
@@ -43,28 +44,16 @@ const init = async () => {
 
     if (option === "ViewAllRoles") {
       const optionResults = await viewAllRoles(db);
+
       console.table(optionResults);
     }
     if (option === "viewAllEmpsByDepartment") {
-      const optionResults = await executeQuery(`SELECT 
-            e.id,
-            CONCAT(e.first_name, ' ', e.last_name) AS employee,
-            r.salary,
-            r.title,
-            d.dept_name,
-            CONCAT(m.first_name, ' ', m.last_name) AS manager
-        FROM
-            employee AS e
-                LEFT JOIN
-            employee AS m ON e.manager_id = m.id
-                INNER JOIN
-            emp_role r ON e.role_id = r.id
-                LEFT JOIN
-            department d ON r.department_id = d.id;`);
+      const optionResults = await viewAllEmpsByDepartment(db);
+
       console.table(optionResults);
     }
     if (option === "viewAllByManager") {
-      const optionResults = await executeQuery(`SELECT
+      const [optionResults] = await db.query(`SELECT
           e.id,
           CONCAT(e.first_name, ' ', e.last_name) AS employee,
           r.salary,
@@ -72,51 +61,52 @@ const init = async () => {
           d.dept_name,
           CONCAT(m.first_name, ' ', m.last_name) AS manager
       FROM
-          employee AS e
-          LEFT JOIN employee AS m ON e.manager_id = m.id
-          LEFT JOIN emp_role r ON e.role_id = r.id
-          LEFT JOIN department d ON r.department_id = d.id`);
+          employees AS e
+          LEFT JOIN employees AS m ON e.manager_id = m.id
+          LEFT JOIN emp_roles r ON e.role_id = r.id
+          LEFT JOIN departments d ON r.department_id = d.id`);
       console.table(optionResults);
     }
     //add employee
-    // if (option === "AddEmployee") {
-    //   const roles = await executeQuery("SELECT * FROM emp_role");
-    //   const employees = await executeQuery("SELECT * FROM employee");
-    //   const departments = await executeQuery("SELECT * FROM department");
-    //   const employeeQuestions = [
-    //     {
-    //       type: "input",
-    //       message: "Please enter employee's first name:",
-    //       name: "first_name",
-    //     },
-    //     {
-    //       type: "input",
-    //       message: "Please enter employee's last name:",
-    //       name: "last_name",
-    //     },
-    //     {
-    //       type: "list",
-    //       message: "Please select a role:",
-    //       name: "role_id",
-    //       choices: generateUserChoices(roles, "title"),
-    //     },
-    //     {
-    //       type: "list",
-    //       message: "Please select a Manager:",
-    //       name: "manager_id",
-    //       choices: generateUserChoices(manager),
-    //     },
-    //   ];
-    //   const { role_id, first_name, last_name, manager_id } =
-    //     await inquirer.prompt(employeeQuestions);
-    // }
+    if (option === "addEmployee") {
+      console.log(option);
+      const [roles] = await db.query("SELECT * FROM emp_roles");
+      const [employees] = await db.query("SELECT * FROM employees");
+      const employeeQuestions = [
+        {
+          type: "input",
+          message: "Please enter employee's first name:",
+          name: "first_name",
+        },
+        {
+          type: "input",
+          message: "Please enter employee's last name:",
+          name: "last_name",
+        },
+        {
+          type: "list",
+          message: "Please select a role:",
+          name: "role_id",
+          choices: generateUserChoices(roles, "title"),
+        },
+        {
+          type: "list",
+          message: "Please select a Manager:",
+          name: "manager_id",
+          choices: generateEmployeeName(employees),
+        },
+      ];
+      const { role_id, first_name, last_name, manager_id } =
+        await inquirer.prompt(employeeQuestions);
+     
 
-    // await executeQuery(
-    //   `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES("${first_name}", "${last_name}", ${role_id}, ${manager_id})`
-    // );
-    // console.log(
-    //   `You have successfully added ${first_name} ${last_name} to the system`
-    // );
+      await db.query(
+        `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES("${first_name}", "${last_name}", ${role_id}, ${manager_id})`
+      );
+      console.log(
+        `You have successfully added ${first_name} ${last_name} to the system`
+      );
+    }
 
     //addDepartments
     if (option === "addDepartment") {
@@ -128,15 +118,13 @@ const init = async () => {
         },
       ];
       const { newDepartment } = await inquirer.prompt(departmentQuestions);
-      await executeQuery(
-        `INSERT INTO department (dept_name) VALUES("${newDepartment}")`
-      );
+      await db(`INSERT INTO department (dept_name) VALUES("${newDepartment}")`);
       console.log(`You have added ${newDepartment} to the system`);
 
       if (option === "updateRole") {
         //queries
-        const employee = executeQuery("SELECT * FROM employee");
-        const role = executeQuery("SELECT * FROM role");
+        const employee = executeQuery("SELECT * FROM employees");
+        const role = executeQuery("SELECT * FROM roles");
         //questions
         const newRole = [
           {
@@ -156,7 +144,7 @@ const init = async () => {
         const { id, role_id } = await inquirer.prompt(newRole);
 
         await db.query(
-          `UPDATE employee SET role_id = ${role_id} WHERE id = ${id}`
+          `UPDATE employees SET role_id = ${role_id} WHERE id = ${id}`
         );
         console.log(`Role has been successfully updated`);
       }

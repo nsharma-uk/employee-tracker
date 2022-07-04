@@ -1,7 +1,7 @@
 USE company_db;
 
 INSERT INTO
-    department (dept_name)
+    departments (dept_name)
 VALUES
     ("Executive"),
     ("Information Technology"),
@@ -10,7 +10,7 @@ VALUES
     ("Finance");
 
 INSERT INTO
-    emp_role (title, salary, department_id)
+    emp_roles (title, salary, department_id)
 VALUES
     ("Branch Manager", 90000.00, 1),
     ("Assistant Manager", 75000.00, 1),
@@ -24,13 +24,13 @@ VALUES
     ("Head of Finance", 60000.00, 5);
 
 INSERT INTO
-    employee (first_name, last_name, role_id)
+    employees (first_name, last_name, role_id)
 VALUES
     ("Hiroshi", "Tadano", 1),
     ("Jenny", "Klein", 10);
 
 INSERT INTO
-    employee (first_name, last_name, role_id, manager_id)
+    employees (first_name, last_name, role_id, manager_id)
 VALUES
     ("Alvin", "Monk", 2, 1),
     ("Emily", "Watson", 3, 1),

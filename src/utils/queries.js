@@ -2,7 +2,7 @@
 
 const viewAllDepartments = async (db) => {
   const [departments] = await db.query(
-    "SELECT * FROM departments ORDER BY department_name"
+    "SELECT * FROM departments ORDER BY dept_name"
   );
   return departments;
 };
@@ -17,26 +17,51 @@ const viewAllEmployees = async (db) => {
         d.dept_name,
         CONCAT(m.first_name, ' ', m.last_name) AS manager
     FROM
-        employee e
+        employees e
             LEFT JOIN
-        employee m ON e.manager_id = m.id
+        employees m ON e.manager_id = m.id
             LEFT JOIN
-        emp_role r ON e.role_id = r.id
+        emp_roles r ON e.role_id = r.id
             LEFT JOIN
-        department d ON r.department_id = d.id;`);
+        departments d ON r.department_id = d.id;`);
   return employees;
 };
 
 const viewAllRoles = async (db) => {
   const [roles] = await db.query(`SELECT 
-    emp_role.id,
-    emp_role.title AS role,
-    emp_role.salary,
-    department.dept_name AS department
+    emp_roles.id,
+    emp_roles.title AS role,
+    emp_roles.salary,
+    departments.dept_name AS department
 FROM
-    emp_role
+    emp_roles
         INNER JOIN
-    department ON department.id = emp_role.department_id;`);
+    departments ON departments.id = emp_roles.department_id;`);
+  return roles;
 };
 
-module.exports = { viewAllDepartments, viewAllEmployees, viewAllRoles };
+const viewAllEmpsByDepartment = async (db) => {
+  const [employee] = await db.query(`SELECT 
+  e.id,
+  CONCAT(e.first_name, ' ', e.last_name) AS employee,
+  r.salary,
+  r.title,
+  d.dept_name,
+  CONCAT(m.first_name, ' ', m.last_name) AS manager
+FROM
+  employees AS e
+      LEFT JOIN
+  employees AS m ON e.manager_id = m.id
+      INNER JOIN
+  emp_roles r ON e.role_id = r.id
+      LEFT JOIN
+  departments d ON r.department_id = d.id;`);
+  return employee;
+};
+
+module.exports = {
+  viewAllDepartments,
+  viewAllEmployees,
+  viewAllRoles,
+  viewAllEmpsByDepartment,
+};
