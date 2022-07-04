@@ -1,60 +1,48 @@
 require("dotenv").config();
 
-//const mysql = require("mysql2");
+const mysql = require("mysql2");
 //const chalk = require("chalk");
 const inquirer = require("inquirer");
 const { optionQuestions } = require("./utils/questions");
 const { generateUserChoices, generateEmployeeName } = require("./utils/utils");
-const initDatabase = require("./utils/db");
+//const initDatabase = require("./utils/db");
 const ctable = require("console.table");
+const {
+  viewAllDepartments,
+  viewAllEmployees,
+  viewAllRoles,
+} = require("./utils/queries");
 
 const init = async () => {
-  //try {
-  const { executeQuery, closeConnection } = await initDatabase({
+  console.log("Welcome to the Employee Management System");
+
+  // try {
+  const config = {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-  });
-
-  console.log("Welcome to the Employee Management System");
+  };
+  const db = await mysql.createConnection(config);
 
   let inProgress = true;
 
   while (inProgress) {
     const { option } = await inquirer.prompt(optionQuestions);
+
     if (option === "viewAllDepartments") {
-      const optionResults = await executeQuery("SELECT * FROM department");
+      const optionResults = await viewAllDepartments(db);
+
       console.table(optionResults);
     }
     if (option === "viewAllEmployees") {
-      const optionResults = await executeQuery(`SELECT 
-        e.id,
-        CONCAT(e.first_name, ' ', e.last_name) AS employee,
-        r.salary,
-        r.title,
-        d.dept_name,
-        CONCAT(m.first_name, ' ', m.last_name) AS manager
-    FROM
-        employee e
-            LEFT JOIN
-        employee m ON e.manager_id = m.id
-            LEFT JOIN
-        emp_role r ON e.role_id = r.id
-            LEFT JOIN
-        department d ON r.department_id = d.id;`);
+      const optionResults = await viewAllEmployees(db);
+
       console.table(optionResults);
     }
+
     if (option === "ViewAllRoles") {
-      const optionResults = await executeQuery(`SELECT 
-        emp_role.id,
-        emp_role.title AS role,
-        emp_role.salary,
-        department.dept_name AS department
-    FROM
-        emp_role
-            INNER JOIN
-        department ON department.id = emp_role.department_id;`);
+      const optionResults = await viewAllRoles(db);
       console.table(optionResults);
     }
     if (option === "viewAllEmpsByDepartment") {
@@ -145,45 +133,43 @@ const init = async () => {
       );
       console.log(`You have added ${newDepartment} to the system`);
 
-      
       if (option === "updateRole") {
-      //queries
-      const employee = executeQuery("SELECT * FROM employee");
-      const role = executeQuery("SELECT * FROM role");
-      //questions
-      const newRole = [
-        {
-          type: "list",
-          message: "Which employee would you like to update?",
-          name: "id",
-          choices: generateEmployeeName(employee),
-        },
-        {
-          type: "list",
-          message:
-            "What role would you like to assign to the selected employee?",
-          name: "role_id",
-          choices: generateUserChoices(role, "title"),
-        },
-      ];
-      const { id, role_id } = await inquirer.prompt(newRole);
+        //queries
+        const employee = executeQuery("SELECT * FROM employee");
+        const role = executeQuery("SELECT * FROM role");
+        //questions
+        const newRole = [
+          {
+            type: "list",
+            message: "Which employee would you like to update?",
+            name: "id",
+            choices: generateEmployeeName(employee),
+          },
+          {
+            type: "list",
+            message:
+              "What role would you like to assign to the selected employee?",
+            name: "role_id",
+            choices: generateUserChoices(role, "title"),
+          },
+        ];
+        const { id, role_id } = await inquirer.prompt(newRole);
 
-      await db.query(
-        `UPDATE employee SET role_id = ${role_id} WHERE id = ${id}`
-      );
-      console.log(`Role has been successfully updated`);
-
-
+        await db.query(
+          `UPDATE employee SET role_id = ${role_id} WHERE id = ${id}`
+        );
+        console.log(`Role has been successfully updated`);
+      }
+      if (option === "Exit") {
+        await db.end();
+        inProgress = false;
+        console.log("THANK YOU");
+      }
     }
-    if (option === "Exit") {
-      await closeConnection();
-      inProgress = false;
-      console.log("THANK YOU");
-    }
+    // } catch (error) {
+    //   console.log(`[ERROR]: Internal error | ${error.message}`);
+    //   process.exit(0);
+    // }
   }
-  // } catch (error) {
-  //   console.log(`[ERROR]: Internal error | ${error.message}`);
-  //   process.exit(0);
-  // }
 };
 init();
