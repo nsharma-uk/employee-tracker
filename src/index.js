@@ -31,17 +31,19 @@ const init = async () => {
   while (inProgress) {
     const { option } = await inquirer.prompt(optionQuestions);
 
+    //view all depts
     if (option === "viewAllDepartments") {
       const optionResults = await viewAllDepartments(db);
 
       console.table(optionResults);
     }
+    //view all employees
     if (option === "viewAllEmployees") {
       const optionResults = await viewAllEmployees(db);
 
       console.table(optionResults);
     }
-
+    //view all roles
     if (option === "ViewAllRoles") {
       const optionResults = await viewAllRoles(db);
 
@@ -69,7 +71,6 @@ const init = async () => {
     }
     //add employee
     if (option === "addEmployee") {
-      console.log(option);
       const [roles] = await db.query("SELECT * FROM emp_roles");
       const [employees] = await db.query("SELECT * FROM employees");
       const employeeQuestions = [
@@ -98,7 +99,6 @@ const init = async () => {
       ];
       const { role_id, first_name, last_name, manager_id } =
         await inquirer.prompt(employeeQuestions);
-     
 
       await db.query(
         `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES("${first_name}", "${last_name}", ${role_id}, ${manager_id})`
@@ -110,54 +110,59 @@ const init = async () => {
 
     //addDepartments
     if (option === "addDepartment") {
+      const [departments] = await db.query("SELECT * FROM departments");
       const departmentQuestions = [
         {
           type: "input",
-          message: "Please enter the new department:",
-          name: "addDepartment",
+          message: "Please enter the new department name:",
+          name: "dept_name",
+          choices: generateUserChoices(departments, "dept_name"),
         },
       ];
-      const { newDepartment } = await inquirer.prompt(departmentQuestions);
-      await db(`INSERT INTO department (dept_name) VALUES("${newDepartment}")`);
-      console.log(`You have added ${newDepartment} to the system`);
+      const { dept_name, id } = await inquirer.prompt(departmentQuestions);
 
-      if (option === "updateRole") {
-        //queries
-        const employee = executeQuery("SELECT * FROM employees");
-        const role = executeQuery("SELECT * FROM roles");
-        //questions
-        const newRole = [
-          {
-            type: "list",
-            message: "Which employee would you like to update?",
-            name: "id",
-            choices: generateEmployeeName(employee),
-          },
-          {
-            type: "list",
-            message:
-              "What role would you like to assign to the selected employee?",
-            name: "role_id",
-            choices: generateUserChoices(role, "title"),
-          },
-        ];
-        const { id, role_id } = await inquirer.prompt(newRole);
+      await db.query(
+        `INSERT INTO departments (dept_name) VALUES("${dept_name}")`
+      );
 
-        await db.query(
-          `UPDATE employees SET role_id = ${role_id} WHERE id = ${id}`
-        );
-        console.log(`Role has been successfully updated`);
-      }
-      if (option === "Exit") {
-        await db.end();
-        inProgress = false;
-        console.log("THANK YOU");
-      }
+      console.log(`You have successfully added ${dept_name} to the system`);
     }
-    // } catch (error) {
-    //   console.log(`[ERROR]: Internal error | ${error.message}`);
-    //   process.exit(0);
-    // }
+
+    if (option === "updateRole") {
+      const employee = await db.query("SELECT * FROM employees");
+      const role = await db.query("SELECT * FROM roles");
+
+      const newRole = [
+        {
+          type: "list",
+          message: "Which employee would you like to update?",
+          name: "id",
+          choices: generateEmployeeName(employee),
+        },
+        {
+          type: "list",
+          message:
+            "What role would you like to assign to the selected employee?",
+          name: "role_id",
+          choices: generateUserChoices(role, "title"),
+        },
+      ];
+      const { id, role_id } = await inquirer.prompt(newRole);
+
+      await db.query(
+        `UPDATE employees SET role_id = ${role_id} WHERE id = ${id}`
+      );
+      console.log(`Role has been successfully updated`);
+    }
+    if (option === "Exit") {
+      await db.end();
+      inProgress = false;
+      console.log("THANK YOU");
+    }
   }
+  // } catch (error) {
+  //   console.log(`[ERROR]: Internal error | ${error.message}`);
+  //   process.exit(0);
+  // }
 };
 init();

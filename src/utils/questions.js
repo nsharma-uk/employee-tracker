@@ -36,21 +36,11 @@ const optionQuestions = {
       short: "Add department",
     },
     {
-      value: "removeDepartment",
-      name: "Remove a Department",
-      short: "Remove department",
-    },
-    {
       value: "addEmployee",
       name: "Add an employee",
       short: "Add employee",
     },
     {
-      value: "removeEmployee",
-      name: "Remove an Employee",
-    },
-    {
-     
       value: "updateRole",
       name: "Update employee role",
       short: "Update employee",
@@ -59,17 +49,11 @@ const optionQuestions = {
       short: "Update Manager",
       value: "updateManager",
       name: "Update a manager",
-     
     },
     {
       value: "addRole",
       name: "Add a role",
       short: "Add role",
-    },
-    {
-      value: "removeRole",
-      name: "Remove a role",
-      short: "Remove role",
     },
     {
       value: "Exit",
@@ -79,4 +63,4 @@ const optionQuestions = {
   ],
 };
 
-module.exports = {optionQuestions};
+module.exports = { optionQuestions };
