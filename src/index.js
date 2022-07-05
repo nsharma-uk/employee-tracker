@@ -49,11 +49,16 @@ const init = async () => {
 
       console.table(optionResults);
     }
+
+    //view employee by department
+
     if (option === "viewAllEmpsByDepartment") {
       const optionResults = await viewAllEmpsByDepartment(db);
 
       console.table(optionResults);
     }
+
+    //view employee by manager
     if (option === "viewAllByManager") {
       const [optionResults] = await db.query(`SELECT
           e.id,
@@ -119,7 +124,7 @@ const init = async () => {
           choices: generateUserChoices(departments, "dept_name"),
         },
       ];
-      const { dept_name, id } = await inquirer.prompt(departmentQuestions);
+      const { dept_name } = await inquirer.prompt(departmentQuestions);
 
       await db.query(
         `INSERT INTO departments (dept_name) VALUES("${dept_name}")`
@@ -128,6 +133,42 @@ const init = async () => {
       console.log(`You have successfully added ${dept_name} to the system`);
     }
 
+    //add Roles
+    // if (option === "addRole") {
+    //   const [roles] = await db.query("SELECT * FROM emp_roles");
+    //   const [departments] = await db.query("SELECT * FROM departments");
+    //   const roleQuestions = [
+    //     {
+    //       type: "input",
+    //       message: "Please select the name of the role you wish to add",
+    //       name: "title",
+    //       choices: generateUserChoices(roles, "title"),
+    //     },
+    //     {
+    //       type: "list",
+    //       message: "Please select which department the role belongs to",
+    //       name: "dept_name",
+    //       choices: generateUserChoices(departments, "dept_name"),
+    //     },
+    //     {
+    //       type: "input",
+    //       message: "Please enter the salary for the role",
+    //       name: "salary",
+    //       choices: generateUserChoices(roles, "salary"),
+    //     },
+    //   ];
+    //   const { title, department_id, salary } = await inquirer.prompt(
+    //     roleQuestions
+    //   );
+    //   await db.query(
+    //     `INSERT INTO emp_roles (title, department_id, salary ) VALUES ("${title}", ${department_id}, ${salary}  )`
+    //   );
+    //   console.log(`You have successfully added ${title} to the system`);
+    // }
+
+    //update employee
+
+    //upate role
     if (option === "updateRole") {
       const employee = await db.query("SELECT * FROM employees");
       const role = await db.query("SELECT * FROM roles");

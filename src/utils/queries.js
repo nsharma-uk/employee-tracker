@@ -1,5 +1,7 @@
 //view departments
 
+//complex query syntax from nazeh abel https://github.com/nazehs
+
 const viewAllDepartments = async (db) => {
   const [departments] = await db.query(
     "SELECT * FROM departments ORDER BY dept_name"
